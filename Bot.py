@@ -42,15 +42,22 @@ def get_user_info(user, api_key):
 
 def transfer_regular_to_17(userid):
 	profile = get_user_info(userid, API_KEY)
+	if not profile:
+		return "User not found"
+	
 	if not profile or profile["about"] != "I WANT TO TRANSFER MY DATA":
 		return "Player has not verified. Cancelling transfer. Set your about me on Roblox to 'I WANT TO TRANSFER MY DATA' to proceed."
 
 	# Check if they already transferred in the past
 	other_data = get_entry(4924789901, "PlayerData", "Version1", userid, API_KEY)
+
+	if not other_data:
+		return "Play 17+ first to transfer data"
+
 	if other_data and any(i[0] == "Transferred" for i in other_data["value"]):
 		return "Already transferred"
 
-	regular_data = get_entry(4452297356, "PlayerData", "Version1", "41372847", API_KEY)
+	regular_data = get_entry(4452297356, "PlayerData", "Version1", userid, API_KEY)
 	if not regular_data:
 		return "No data found to transfer"
 
